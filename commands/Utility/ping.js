@@ -6,8 +6,7 @@ module.exports = {
 
     execute (message) {
         const embed = new Discord.MessageEmbed()
-            .setTitle(`Pong!`)
-            .setDescription(`API Latency: ${Math.round(message.client.ping)}ms.`)
+            .setDescription(`Pong!`)
             .setTimestamp()
             .setColor('RED');
 
