@@ -9,7 +9,7 @@ module.exports = {
             return;
         }
 
-        const answer = args[0].toUpperCase();
+        const answer = args.join(' ').toUpperCase();
         let channelName = message.channel.name;
         if (channelName[0] !== "✅") {
             channelName = "✅" + channelName;

@@ -5,11 +5,11 @@ module.exports = {
 
     async execute (message, args) {
         if (!args.length) {
-            message.reply("pleae specify the name of the meta.");
+            message.reply("please specify the name of the meta.");
             return;
         }
 
-        const metaName = args[0];
+        const metaName = args.join(' ');
         const guildManager = message.guild.channels;
 
         const category = await guildManager.create(metaName, {type: 'category'});

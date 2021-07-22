@@ -9,7 +9,7 @@ module.exports = {
             return;
         }
 
-        const puzzleName = args[0];
+        const puzzleName = args.join(' ');
         const guildManager = message.guild.channels;
 
         await guildManager.create("🧩" + puzzleName, {parent: message.channel.parent});
