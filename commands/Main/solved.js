@@ -6,8 +6,7 @@ module.exports = {
 
     async execute (message, args) {
         if (!args.length) {
-            await message.reply("please specify the answer.");
-            return;
+            return message.reply("please specify the answer.");
         }
 
         // send answer and pin

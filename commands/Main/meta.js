@@ -1,22 +1,20 @@
 module.exports = {
     name: 'meta',
-    description: `Create a new category with a meta channel.`,
+    description: `Create a new category with a meta channel. The last word will be taken as the link.`,
     aliases: ['m'],
     usage: '[meta name] [link to meta]',
 
     async execute (message, args) {
         if (!args.length) {
-            message.reply("please specify the name of the meta.");
-            return;
+            return message.reply("please specify the name of the meta.");
+        }
+
+        if (args.length < 2) {
+            return message.reply("please specify a link.");
         }
 
         const metaLink = args.pop();
         const metaName = args.join(' ');
-
-        if (!args.length || !metaLink.startsWith("http")) {
-            message.reply("please specify a link.");
-            return;
-        }
 
         // create category and channels
         const guildManager = message.guild.channels;
