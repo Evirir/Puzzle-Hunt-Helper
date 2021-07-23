@@ -19,7 +19,8 @@ module.exports = {
         collector.on('collect', reaction => {
             if (reaction.emoji.name === '✅') {
                 const category = message.channel.parent;
-                category.children.forEach((ch) => ch.delete());
+                const children = category.children;
+                children.forEach((ch) => ch.delete());
                 category.delete();
             }
         });
