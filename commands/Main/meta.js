@@ -1,6 +1,6 @@
 module.exports = {
     name: 'meta',
-    description: `Create a new category with a meta channel. The last word will be taken as the link.`,
+    description: `Create a new meta category with a text and a voice channel. The last word will be taken as the link.`,
     aliases: ['m'],
     usage: '[meta name] [link to meta]',
 

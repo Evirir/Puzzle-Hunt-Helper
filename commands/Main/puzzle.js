@@ -1,6 +1,6 @@
 module.exports = {
     name: 'puzzle',
-    description: `Create a new channel (puzzle) in the current category (meta). The last word will be taken as the link.`,
+    description: `Create a puzzle (channel) in your current meta (category). The last word will be taken as the link.`,
     aliases: ['p', 'problem'],
     usage: '[puzzle name] [link to puzzle]',
 
