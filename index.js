@@ -36,24 +36,6 @@ client.on("guildDelete", guild => {
     client.channels.cache.get(consoleID).send(msg);
 });
 
-client.on("channelCreate", channel => {
-    if (channel.type !== 'text')
-        return;
-
-    const msg = `Channel created\nID: ${channel.id}\nName: ${channel.name}\nServer: ${channel.guild.name}`;
-    console.log(msg);
-    client.channels.cache.get(consoleID).send(msg);
-});
-
-client.on("channelDelete", channel => {
-    if (channel.type !== 'text')
-        return;
-
-    const msg = `Channel **${channel.name}** deleted (ID: ${channel.id})`;
-    console.log(msg);
-    client.channels.cache.get(consoleID).send(msg);
-});
-
 client.on('message', async message => {
     let prefix = defaultPrefix;
 
