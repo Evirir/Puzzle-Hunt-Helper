@@ -26,7 +26,7 @@ module.exports = {
         const sheetLink = await createSheets(puzzleName);
 
         // send link and pin
-        const linkMsg = await textChannel.send(`Link: <${puzzleLink}>\nSheet: <${sheetLink}>`);
+        const linkMsg = await textChannel.send(`Puzzle link: <${puzzleLink}>\nSheet: <${sheetLink}>`);
         await linkMsg.pin();
 
         message.delete();

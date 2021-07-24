@@ -28,7 +28,7 @@ module.exports = {
         const sheetLink = await createSheets(metaName);
 
         // send links and pin
-        const linkMsg = await textChannel.send(`Link: <${metaLink}>\nSheet: <${sheetLink}>`);
+        const linkMsg = await textChannel.send(`Meta link: <${metaLink}>\nSheet: <${sheetLink}>`);
         await linkMsg.pin();
 
         message.delete();
