@@ -22,8 +22,11 @@ module.exports = {
         const textChannel = await guildManager.create("🧩" + puzzleName, {parent: category});
         await guildManager.create("🧩" + puzzleName, {parent: category, type: "voice"});
 
+        // create spreadsheet
+        const sheetLink = await createSheets(puzzleName);
+
         // send link and pin
-        const linkMsg = await textChannel.send(`Link: <${puzzleLink}>`);
+        const linkMsg = await textChannel.send(`Link: <${puzzleLink}>\nSheet: <${sheetLink}>`);
         await linkMsg.pin();
 
         message.delete();

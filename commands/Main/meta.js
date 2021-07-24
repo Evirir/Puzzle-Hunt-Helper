@@ -1,3 +1,5 @@
+const createSheets = require('../../google.js');
+
 module.exports = {
     name: 'meta',
     description: `Create a new meta category with a text and a voice channel. The last word will be taken as the link.`,
@@ -22,8 +24,11 @@ module.exports = {
         const textChannel = await guildManager.create("🏁" + metaName, {parent: category});
         await guildManager.create("🏁" + metaName, {parent: category, type: "voice"});
 
-        // send link and pin
-        const linkMsg = await textChannel.send(`Link: <${metaLink}>`);
+        // create spreadsheet
+        const sheetLink = await createSheets(metaName);
+
+        // send links and pin
+        const linkMsg = await textChannel.send(`Link: <${metaLink}>\nSheet: <${sheetLink}>`);
         await linkMsg.pin();
 
         message.delete();
