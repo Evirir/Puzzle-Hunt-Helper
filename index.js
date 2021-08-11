@@ -20,7 +20,7 @@ categories.forEach(category => {
 client.once('ready', async () => {
     let startMessage = `It's currently **${client.readyAt}**\n`;
     console.log(startMessage);
-    await client.user.setActivity(`for prefix "!"`, { type: "WATCHING"});
+    await client.user.setActivity(`for !help`, { type: "WATCHING"});
 });
 
 client.on("guildCreate", guild => {
