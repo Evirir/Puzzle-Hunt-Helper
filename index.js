@@ -20,8 +20,7 @@ categories.forEach(category => {
 client.once('ready', async () => {
     let startMessage = `It's currently **${client.readyAt}**\n`;
     console.log(startMessage);
-    client.channels.cache.get(consoleID).send(startMessage);
-    await client.user.setActivity(`${client.users.cache.size} hoomans and dragons`, { type: "WATCHING"});
+    await client.user.setActivity(`for prefix "!"`, { type: "WATCHING"});
 });
 
 client.on("guildCreate", guild => {
