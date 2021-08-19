@@ -17,11 +17,11 @@ module.exports = {
 
         // rename text channel
         let channelName = message.channel.name;
-        if (channelName[0] === '🏁') {
+        if (channelName.startsWith('🏁')) {
             let category = message.channel.parent;
             await category.edit({ name: '✅' + category.name }).catch(e => console.log(e));
         }
-        if (channelName[0] !== '✅') {
+        if (!channelName[0].startsWith('✅')) {
             channelName = '✅' + channelName;
         }
         await message.channel.edit({name: channelName}).catch(e => console.log(e));
