@@ -1,3 +1,5 @@
+const createSheets = require("../../google");
+
 module.exports = {
     name: 'puzzle',
     description: `Create a puzzle (channel) in your current meta (category). The last word will be taken as the link.`,
@@ -19,15 +21,15 @@ module.exports = {
         // create channels
         const guildManager = message.guild.channels;
         const category = message.channel.parent;
-        const textChannel = await guildManager.create("🧩" + puzzleName, {parent: category});
-        await guildManager.create("🧩" + puzzleName, {parent: category, type: "voice"});
+        const textChannel = await guildManager.create("🧩" + puzzleName, {parent: category}).catch(e => console.log(e));
+        await guildManager.create("🧩" + puzzleName, {parent: category, type: "voice"}).catch(e => console.log(e));
 
         // create spreadsheet
-        const sheetLink = await createSheets(puzzleName);
+        const sheetLink = await createSheets(puzzleName).catch(e => console.log(e));
 
         // send link and pin
-        const linkMsg = await textChannel.send(`Puzzle link: <${puzzleLink}>\nSheet: <${sheetLink}>`);
-        await linkMsg.pin();
+        const linkMsg = await textChannel.send(`Puzzle link: <${puzzleLink}>\nSheet: <${sheetLink}>`).catch(e => console.log(e));
+        await linkMsg.pin().catch(e => console.log(e));
 
         message.delete();
     }
