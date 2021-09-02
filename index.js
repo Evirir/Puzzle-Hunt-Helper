@@ -8,6 +8,7 @@ dotenv.config();
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
+// load commands
 const categories = fs.readdirSync('./commands');
 categories.forEach(category => {
     const commandFiles = fs.readdirSync(`./commands/${category}`).filter(file => file.endsWith('.js'));
@@ -36,7 +37,7 @@ client.on("guildDelete", guild => {
 });
 
 client.on('message', async message => {
-    let prefix = defaultPrefix;
+    const prefix = defaultPrefix;
 
     // ignore DMs
     if (!message.guild)
@@ -50,6 +51,7 @@ client.on('message', async message => {
     if (message.author.bot)
         return;
 
+    // parse input
     const args = message.content.slice(prefix.length).split(/\s+/);
     const commandName = args.shift().toLowerCase();
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
@@ -60,7 +62,7 @@ client.on('message', async message => {
 
     // only allow the dev to use dev commands
     if (command.dev && message.author.id !== dragID) {
-        return message.channel.send(`This command is only available to Evirir the dragon.`);
+        return message.channel.send(`This command is only available to the developer.`);
     }
 
     // display help message if the command requires arguments but no arguments are given
@@ -74,7 +76,7 @@ client.on('message', async message => {
         console.log(err);
         client.channels.cache.get(consoleID).send(`Error at ${message.guild.name}/${message.channel.name}/${message.id} (${message.guild.id}/${message.channel.id}):\n\`${err.message}\``);
         if (message.author.id === dragID)
-            return message.reply(`I have some issues here, go check the log ó.=.ò"\nError: \`${err.message}\``)
+            return message.reply(`I have some issues here, go check the log ó.=.ò"\nError: \`${err.message}\``);
         else
             return message.reply(`I've encountered some error, please tell <@${dragID}> and blame him for that.\nError: \`${err.message}\``);
     }
