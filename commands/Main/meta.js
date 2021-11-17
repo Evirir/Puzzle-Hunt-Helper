@@ -1,4 +1,4 @@
-const createSheets = require('../../google.js');
+const createSheets = require('../../tools/google.js');
 
 module.exports = {
     name: 'meta',
