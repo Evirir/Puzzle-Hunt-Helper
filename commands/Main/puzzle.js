@@ -28,7 +28,7 @@ module.exports = {
         const textChannel = await guildManager.create("🧩" + puzzleName, {parent: category}).catch(e => reportError(message, e));
 
         // create voice channel if requested
-        if (addArgs.get('v')) {
+        if (addArgs.has('v')) {
             await guildManager.create("🧩" + puzzleName, {
                 parent: category,
                 type: "voice"
@@ -50,6 +50,6 @@ module.exports = {
         const linkMsg = await textChannel.send(sentMsg).catch(e => reportError(message, e));
         await linkMsg.pin().catch(e => reportError(message, e));
 
-        await message.delete();
+        await message.delete().catch(e => reportError(message, e));
     }
 };

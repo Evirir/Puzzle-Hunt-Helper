@@ -28,17 +28,17 @@ parseArgs = (input, format) => {
         } else {
             addArgsStarted = true;
 
-            const arg = format[input[i].slice(1)];
+            const argName = input[i].slice(1);
 
-            if (arg === undefined || args.add.has(arg)) {
+            if (!format.hasOwnProperty(argName) || args.add.has(argName)) {
                 return null;
             }
 
-            const argCount = arg.count;
+            const argCount = format[argName].count;
             if (i + argCount >= input.length) {
                 return null;
             }
-            args.add.set(input[i], input.slice(i + 1, i + argCount));
+            args.add.set(argName, input.slice(i + 1, i + argCount + 1));
             i += argCount;
         }
     }

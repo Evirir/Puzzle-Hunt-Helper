@@ -1,3 +1,5 @@
+const reportError = require("../../tools/reportError");
+
 module.exports = {
     name: 'delete',
     description: `Deletes the whole category of the current message.`,
@@ -16,12 +18,12 @@ module.exports = {
         };
         const collector = msg.createReactionCollector(filter, { time: 15000, max: 1 });
 
-        collector.on('collect', reaction => {
+        collector.on('collect', async reaction => {
             if (reaction.emoji.name === '✅') {
                 const category = message.channel.parent;
                 const children = category.children;
                 children.forEach((ch) => ch.delete());
-                category.delete();
+                await category.delete().catch(err => reportError(err));
             }
         });
 
