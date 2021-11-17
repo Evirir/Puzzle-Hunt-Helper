@@ -4,7 +4,7 @@ module.exports = {
     name: 'ping',
     description: `Reports the API latency.`,
 
-    execute (message) {
+    execute(message) {
         const embed = new Discord.MessageEmbed()
             .setDescription(`Pong!`)
             .setTimestamp()

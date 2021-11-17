@@ -4,7 +4,7 @@ module.exports = {
     name: 'delete',
     description: `Deletes the whole category of the current message.`,
 
-    async execute (message) {
+    async execute(message) {
         if (!message.channel.parent) {
             return message.channel.send("This channel does not belong to a category.");
         }
