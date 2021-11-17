@@ -22,7 +22,7 @@ module.exports = {
             if (reaction.emoji.name === '✅') {
                 const category = message.channel.parent;
                 const children = category.children;
-                children.forEach((ch) => ch.delete());
+                children.forEach(async ch => await ch.delete().catch(err => reportError(err)));
                 await category.delete().catch(err => reportError(err));
             }
         });
