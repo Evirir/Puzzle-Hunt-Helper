@@ -5,12 +5,12 @@ const {defaultPrefix} = require('../../config.json');
 module.exports = {
     name: 'help',
     description: `Show list of commands if used without arguments. Use \`${defaultPrefix}help [command]\` for more info on the command.`,
-    aliases: ['commands','command','cmd'],
+    aliases: ['commands', 'command', 'cmd'],
     usage: '(command-name)',
 
     execute(message, args, prefix) {
         if (!args.length) {
-            let embed = new Discord.MessageEmbed()
+            const embed = new Discord.MessageEmbed()
                 .setColor('BLUE')
                 .setDescription('My prefix is \`' + prefix + '\`.\n' +
                     '\`!m [meta] [link]\` to create a new category (meta).\n' +
@@ -27,7 +27,7 @@ module.exports = {
                     const command = require(`../${category}/${file}`);
                     commandArray.push(command.name);
                 });
-                embed.addField(`${category}`, `\`${commandArray.join('\` \`')}\``)
+                embed.addField(`${category}`, `\`${commandArray.join('\` \`')}\``);
             });
 
             message.channel.send(embed);
@@ -39,7 +39,7 @@ module.exports = {
             if (!command)
                 return message.reply("unknown command.");
 
-            let embed = new Discord.MessageEmbed()
+            const embed = new Discord.MessageEmbed()
                 .setTitle(`\`${command.name}\``)
                 .setColor('BLUE');
 
@@ -51,6 +51,13 @@ module.exports = {
                 embed.addField(`Usage`, `\`${prefix}${command.name} ${command.usage}\``);
             if (command.notes)
                 embed.addField(`Notes`, command.notes);
+            if (command.args) {
+                let parameters = "";
+                for (const [key, value] of Object.entries(command.args)) {
+                    parameters += `\`-${key}\`: ${value.description}\n`;
+                }
+                embed.addField('Parameters', parameters);
+            }
 
             message.channel.send(embed);
         }
