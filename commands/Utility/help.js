@@ -9,12 +9,14 @@ module.exports = {
     usage: '(command-name)',
 
     execute(message, args, prefix) {
-        if (!args.length) {
+        const mainArgs = args.main;
+
+        if (!mainArgs.length) {
             const embed = new Discord.MessageEmbed()
                 .setColor('BLUE')
                 .setDescription('My prefix is \`' + prefix + '\`.\n' +
-                    '\`!m [meta] [link]\` to create a new category (meta).\n' +
-                    '\`!p [puzzle] [link]\` to create a channel in your current category.\n' +
+                    '\`!m [meta] -l [link]\` to create a new meta (category).\n' +
+                    '\`!p [puzzle] -l [link]\` to create a puzzle (channel) in your current category.\n' +
                     '\`!s [answer]\` to mark a puzzle as solved.\n\n' +
                     '**List of commands:**')
                 .setFooter(`Type ${prefix}help [command] for more info on the command.`);
@@ -33,7 +35,7 @@ module.exports = {
             message.channel.send(embed);
         } else {
             const {commands} = message.client;
-            const name = args[0].toLowerCase();
+            const name = mainArgs[0].toLowerCase();
             const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
 
             if (!command)
@@ -52,11 +54,11 @@ module.exports = {
             if (command.notes)
                 embed.addField(`Notes`, command.notes);
             if (command.args) {
-                let parameters = "";
+                let arguments = "";
                 for (const [key, value] of Object.entries(command.args)) {
-                    parameters += `\`-${key}\`: ${value.description}\n`;
+                    arguments += `\`-${key}\`: ${value.description}\n`;
                 }
-                embed.addField('Parameters', parameters);
+                embed.addField('Additional arguments', arguments);
             }
 
             message.channel.send(embed);

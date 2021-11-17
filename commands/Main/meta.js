@@ -1,36 +1,55 @@
 const createSheets = require('../../tools/google.js');
+const reportError = require('../../tools/reportError.js');
 
 module.exports = {
     name: 'meta',
-    description: `Create a new round (category) with a text and a voice channel. The last word will be taken as the link.`,
-    aliases: ['m','round'],
-    usage: '[meta name] [link to meta]',
+    description: `Create a new round (category) with a text and a voice channel.`,
+    aliases: ['m', 'round'],
+    usage: '[meta name]',
+    args: {
+        l: {count: 1, description: 'link to meta'},
+        v: {count: 0, description: 'create a voice channel for this meta'}
+    },
 
-    async execute (message, args) {
-        if (!args.length) {
+    async execute(message, args) {
+        const mainArgs = args.main;
+        const addArgs = args.add;
+
+        if (!mainArgs.length) {
             return message.reply("please specify the name of the round.");
         }
 
-        if (args.length < 2) {
-            return message.reply("please specify a link.");
+        const metaName = mainArgs.join(' ');
+
+        const guildManager = message.guild.channels;
+        const category = await guildManager.create(metaName, {type: 'category'}).catch(e => reportError(message, e));
+
+        // create text channel
+        const textChannel = await guildManager.create("🏁" + metaName, {parent: category}).catch(e => reportError(e, message));
+
+        // create voice channel if requested
+        if (addArgs.get('v')) {
+            await guildManager.create("🏁" + metaName, {
+                parent: category,
+                type: "voice"
+            }).catch(e => reportError(message, e));
         }
 
-        const metaLink = args.pop();
-        const metaName = args.join(' ');
-
-        // create category and channels
-        const guildManager = message.guild.channels;
-        const category = await guildManager.create(metaName, {type: 'category'}).catch(e => console.log(e));
-        const textChannel = await guildManager.create("🏁" + metaName, {parent: category}).catch(e => console.log(e));
-        await guildManager.create("🏁" + metaName, {parent: category, type: "voice"});
-
         // create spreadsheet
-        const sheetLink = await createSheets(metaName).catch(e => console.log(e));
+        const sheetLink = await createSheets(metaName).catch(e => reportError(e, message));
+
+        // create message
+        let sentMsg = "";
+        if (addArgs.get('l')) {
+            const puzzleLink = addArgs.get('l');
+            sentMsg += `Meta link: <${puzzleLink}>\n`;
+        }
+        sentMsg += `Sheet: <${sheetLink}>`;
 
         // send links and pin
-        const linkMsg = await textChannel.send(`Meta link: <${metaLink}>\nSheet: <${sheetLink}>`).catch(e => console.log(e));
-        await linkMsg.pin().catch(e => console.log(e));
+        const linkMsg = await textChannel.send(sentMsg).catch(e => reportError(e, message));
+        await linkMsg.pin().catch(e => reportError(e, message));
 
-        message.delete();
+        await message.delete();
     }
 };

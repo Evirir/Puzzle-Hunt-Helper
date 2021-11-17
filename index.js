@@ -2,6 +2,8 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const dotenv = require('dotenv');
 const {defaultPrefix, dragID, consoleID} = require('./config.json');
+const reportError = require("./tools/reportError");
+const parseArgs = require("./tools/argument_parser");
 
 dotenv.config();
 
@@ -21,7 +23,7 @@ categories.forEach(category => {
 client.once('ready', async () => {
     let startMessage = `It's currently **${client.readyAt}**\n`;
     console.log(startMessage);
-    await client.user.setActivity(`for !help`, { type: "WATCHING"});
+    await client.user.setActivity(`for !help`, {type: "WATCHING"});
 });
 
 client.on("guildCreate", guild => {
@@ -52,7 +54,9 @@ client.on('message', async message => {
         return;
 
     // parse input
-    const args = message.content.slice(prefix.length).split(/\s+/);
+    const regex = /([^\s"]+)|"((?:\\"|[^"])*)"/g; // treat strings in double quotes as one; allow escaped quotes
+    const args = [...message.content.slice(prefix.length).matchAll(regex)].map(match => match[1] || match[2]);
+
     const commandName = args.shift().toLowerCase();
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
@@ -65,21 +69,22 @@ client.on('message', async message => {
         return message.channel.send(`This command is only available to the developer.`);
     }
 
-    // display help message if the command requires arguments but no arguments are given
-    if (command.args && !args.length) {
-        return client.commands.get('help').execute(message, [commandName], prefix);
+    // parse arguments
+    const parsedArgs = parseArgs(args, command.args);
+    if (parsedArgs === null) {
+        return message.reply(`invalid arguments.`);
     }
 
     try {
-        command.execute(message, args, prefix);
+        command.execute(message, parsedArgs, prefix);
     } catch (err) {
         console.log(err);
         client.channels.cache.get(consoleID).send(`Error at ${message.guild.name}/${message.channel.name}/${message.id} (${message.guild.id}/${message.channel.id}):\n\`${err.message}\``);
         if (message.author.id === dragID)
             return message.reply(`I have some issues here, go check the log ó.=.ò"\nError: \`${err.message}\``);
         else
-            return message.reply(`I've encountered some error, please tell <@${dragID}> and blame him for that.\nError: \`${err.message}\``);
+            return message.reply(`Error encountered: please notify Evirir#5662 and blame him for that.\nError: \`${err.message}\``);
     }
 });
 
-client.login(process.env.TOKEN).catch(e => console.log(e));
+client.login(process.env.TOKEN).catch(e => reportError(message, e));

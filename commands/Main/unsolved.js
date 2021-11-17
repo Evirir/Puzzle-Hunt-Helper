@@ -1,9 +1,11 @@
+const reportError = require("../../tools/reportError");
+
 module.exports = {
     name: 'unsolved',
     description: `Mark the current puzzle/meta as unsolved.`,
     aliases: ['u'],
 
-    execute (message) {
+    execute(message) {
         let channelName = message.channel.name;
         if (channelName.startsWith("✅")) {
             channelName = channelName.slice(1);
@@ -15,6 +17,6 @@ module.exports = {
             categoryName = categoryName.slice(1);
             category.edit({name: categoryName});
         }
-        message.react("✅").catch(e => console.log(e));
+        message.react("✅").catch(e => reportError(message, e));
     }
 };
