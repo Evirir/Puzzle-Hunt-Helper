@@ -1,18 +1,19 @@
-const Discord = require('discord.js');
-const fs = require('fs');
-const {defaultPrefix} = require('../../config.json');
+import {Message, MessageEmbed} from 'discord.js';
+import fs from 'fs';
+import {defaultPrefix} from '../../data.json';
+import {BotClient, Command, CommandArguments} from "../../types";
 
-module.exports = {
+const command: Command = {
     name: 'help',
     description: `Show list of commands if used without arguments. Use \`${defaultPrefix}help [command]\` for more info on the command.`,
     aliases: ['commands', 'command', 'cmd'],
     usage: '(command-name)',
 
-    execute(message, args, prefix) {
+    async execute(message: Message, args: CommandArguments, prefix: string) {
         const mainArgs = args.main;
 
         if (!mainArgs.length) {
-            const embed = new Discord.MessageEmbed()
+            const embed = new MessageEmbed()
                 .setColor('BLUE')
                 .setDescription('My prefix is \`' + prefix + '\`.\n' +
                     '\`!m [meta] -l [link]\` to create a new meta (category).\n' +
@@ -21,10 +22,10 @@ module.exports = {
                     '**List of commands:**')
                 .setFooter(`Type ${prefix}help [command] for more info on the command.`);
 
-            const categories = fs.readdirSync('./commands');
+            const categories = fs.readdirSync('./src/commands');
             categories.forEach(category => {
-                const commandFiles = fs.readdirSync(`./commands/${category}`).filter(file => file.endsWith('.js'));
-                let commandArray = [];
+                const commandFiles = fs.readdirSync(`./src/commands/${category}`).filter(file => file.endsWith('.ts') || file.endsWith('.js'));
+                let commandArray: Command[] = [];
                 commandFiles.forEach(file => {
                     const command = require(`../${category}/${file}`);
                     commandArray.push(command.name);
@@ -32,16 +33,16 @@ module.exports = {
                 embed.addField(`${category}`, `\`${commandArray.join('\` \`')}\``);
             });
 
-            message.channel.send(embed);
+            await message.channel.send({embeds: [embed]});
         } else {
-            const {commands} = message.client;
+            const {commands} = message.client as BotClient;
             const name = mainArgs[0].toLowerCase();
-            const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
+            const command = commands.get(name) || commands.find(c => !!c.aliases && c.aliases.includes(name));
 
             if (!command)
-                return message.reply("unknown command.");
+                return message.reply("Unknown command.");
 
-            const embed = new Discord.MessageEmbed()
+            const embed = new MessageEmbed()
                 .setTitle(`\`${command.name}\``)
                 .setColor('BLUE');
 
@@ -54,14 +55,16 @@ module.exports = {
             if (command.notes)
                 embed.addField(`Notes`, command.notes);
             if (command.args) {
-                let arguments = "";
+                let argsDescription: string = "";
                 for (const [key, value] of Object.entries(command.args)) {
-                    arguments += `\`-${key}\`: ${value.description}\n`;
+                    argsDescription += `\`-${key}\`: ${value.description}\n`;
                 }
-                embed.addField('Additional arguments', arguments);
+                embed.addField('Additional arguments', argsDescription);
             }
 
-            message.channel.send(embed);
+            await message.channel.send({embeds: [embed]});
         }
     }
 };
+
+module.exports = command;

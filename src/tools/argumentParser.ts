@@ -1,15 +1,17 @@
-/*
- input: Raw array of space separated strings.
- format: An Object, the argument format from the command files.
+import {CommandArguments} from "../types";
 
- If a format is specified, returns an Object containing an array `main` and a Map `add` mapping from argument names
- to their values as an array. All arguments except the first one, up to the first add argument, are taken as main arguments.
- If any of the arguments are invalid, return null.
-
- If not, main is set to input.
+/**
+ * @param input Raw array of space separated strings.
+ * @param format An Object, the argument format from the command files.
+ *
+ * @return If a format is specified, returns an Object containing an array `main` and a Map `add` mapping from argument names
+ * to their values as an array. All arguments except the first one, up to the first add argument, are taken as main arguments.
+ * If any of the arguments are invalid, return null.
+ *
+ * If not, main is set to input.
  */
-parseArgs = (input, format) => {
-    const args = {main: [], add: new Map()};
+const parseArgs = (input: string[], format?: any): CommandArguments | null => {
+    const args: any = {main: [], add: new Map()};
 
     if (!format) {
         args.main = [...input];
@@ -17,7 +19,7 @@ parseArgs = (input, format) => {
     }
 
     // whether an add arg has been encountered
-    let addArgsStarted = false;
+    let addArgsStarted: boolean = false;
 
     for (let i = 0; i < input.length; i++) {
         if (!input[i].startsWith("-")) {
@@ -46,4 +48,4 @@ parseArgs = (input, format) => {
     return args;
 };
 
-module.exports = parseArgs;
+export default parseArgs;

@@ -1,7 +1,9 @@
-const createSheets = require("../../tools/google.js");
-const reportError = require("../../tools/reportError");
+import {Message, TextChannel} from "discord.js";
+import createSheets from "../../tools/google";
+import reportError from "../../tools/reportError";
+import {Command, CommandArguments} from "../../types";
 
-module.exports = {
+const command: Command = {
     name: 'puzzle',
     description: `Create a puzzle (channel) in your current meta (category).`,
     aliases: ['p', 'problem'],
@@ -11,27 +13,27 @@ module.exports = {
         v: {count: 0, description: 'create a voice channel for this puzzle'}
     },
 
-    async execute(message, args) {
+    async execute(message: Message, args: CommandArguments) {
         const mainArgs = args.main;
         const addArgs = args.add;
 
         if (!mainArgs.length) {
-            return message.reply("please specify the name of the puzzle.");
+            return message.reply("Please specify the name of the puzzle.");
         }
 
         const puzzleName = mainArgs.join(' ');
 
-        const guildManager = message.guild.channels;
-        const category = message.channel.parent;
+        const guildManager = await message.guild!.channels;
+        const category = (message.channel as TextChannel).parent!;
 
         // create text channel
-        const textChannel = await guildManager.create("🧩" + puzzleName, {parent: category}).catch(e => reportError(message, e));
+        const textChannel = await guildManager.create("🧩" + puzzleName, {parent: category})!.catch(e => reportError(message, e)) as TextChannel;
 
         // create voice channel if requested
         if (addArgs.has('v')) {
             await guildManager.create("🧩" + puzzleName, {
                 parent: category,
-                type: "voice"
+                type: "GUILD_VOICE"
             }).catch(e => reportError(message, e));
         }
 
@@ -47,9 +49,11 @@ module.exports = {
         sentMsg += `Sheet: <${sheetLink}>`;
 
         // send link and pin
-        const linkMsg = await textChannel.send(sentMsg).catch(e => reportError(message, e));
-        await linkMsg.pin().catch(e => reportError(message, e));
+        const linkMsg = await textChannel.send(sentMsg).catch((e: any) => reportError(message, e)) as Message;
+        await linkMsg.pin().catch((e: any) => reportError(message, e));
 
         await message.delete().catch(e => reportError(message, e));
     }
 };
+
+module.exports = command;

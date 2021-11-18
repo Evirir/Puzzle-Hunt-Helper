@@ -1,9 +1,15 @@
-module.exports = {
+import {Message} from "discord.js";
+import {Command} from "../../types";
+
+const command: Command = {
     name: 'uptime',
     description: `Reports the uptime.`,
     aliases: [`awake`],
 
-    execute(message) {
+    execute(message: Message) {
+        if (!message.client.uptime) {
+            return message.channel.send("Uptime is null: something is wrong.");
+        }
         let totalSeconds = (message.client.uptime / 1000);
         let days = Math.floor(totalSeconds / 86400);
         let hours = Math.floor(totalSeconds / 3600);
@@ -16,3 +22,5 @@ module.exports = {
         message.channel.send(`I woke up since ${uptime} ago...and I don't see a reason to sleep yet! \\o.=.o/`);
     }
 };
+
+module.exports = command;

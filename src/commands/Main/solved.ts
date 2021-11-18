@@ -1,23 +1,31 @@
-const reportError = require("../../tools/reportError");
+import reportError from "../../tools/reportError";
+import {Command, CommandArguments} from "../../types";
+import {Message, TextChannel} from "discord.js";
 
-module.exports = {
+const command: Command = {
     name: 'solved',
     description: 'Mark the current puzzle/meta as solved and pin the answer. If the solved puzzle is a meta, also mark the category as solved.',
     aliases: ['s'],
     usage: '[answer]',
     notes: 'Implementation detail: A channel whose name starts with 🏁 is treated as the meta channel.',
 
-    async execute(message, args) {
+    async execute(message: Message, args: CommandArguments) {
         const mainArgs = args.main;
 
         if (!mainArgs.length) {
-            return message.reply("please specify the answer.");
+            return message.reply("Please specify the answer.");
+        }
+        if (!(message.channel instanceof TextChannel)) {
+            return reportError(message, "solved.ts: not in text channel.");
+        }
+        if (!message.channel.parent) {
+            return message.reply("This channel is not in a category.");
         }
 
         // send answer and pin
         const answer = mainArgs.join(' ').toUpperCase();
         const msg = await message.channel.send(`🎊 Answer: ${answer}`).catch(e => reportError(message, e));
-        await msg.pin();
+        await msg?.pin();
 
         // rename text channel
         let channelName = message.channel.name;
@@ -31,3 +39,5 @@ module.exports = {
         await message.channel.edit({name: channelName}).catch(e => reportError(message, e));
     }
 };
+
+module.exports = command;
