@@ -24,9 +24,9 @@ const discordLog = async (message: any) => {
 };
 
 // load commands
-const categories = fs.readdirSync('./commands');
+const categories = fs.readdirSync('./src/commands');
 categories.forEach(category => {
-    const commandFiles = fs.readdirSync(`./commands/${category}`).filter(file => file.endsWith('.js') || file.endsWith('.ts'));
+    const commandFiles = fs.readdirSync(`./src/commands/${category}`).filter(file => file.endsWith('.js') || file.endsWith('.ts'));
     commandFiles.forEach(async file => {
         const command = await import(`./commands/${category}/${file}`);
         client.commands.set(command.name, command);
@@ -95,7 +95,7 @@ client.on('messageCreate', async (message: Discord.Message) => {
 
     try {
         command.execute(message, parsedArgs, prefix);
-    } catch (err) {
+    } catch (err: any) {
         console.log(err);
         await discordLog(`Error at ${message.guild!.name}/${message.channel.name}/${message.id} (${message.guild!.id}/${message.channel.id}):\n\`${err.message}\``);
         if (message.author.id === dragID)

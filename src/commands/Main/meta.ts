@@ -1,5 +1,5 @@
-import createSheets from '../../tools/google.js';
-import reportError from '../../tools/reportError.js';
+import createSheets from '../../tools/google';
+import reportError from '../../tools/reportError';
 import {Command} from "../../types";
 import {GuildCreateChannelOptions, TextChannel} from "discord.js";
 
