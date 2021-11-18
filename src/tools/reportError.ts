@@ -3,15 +3,15 @@ import {consoleID} from '../data.json';
 
 /**
  * Prints the error to the console and the console channel.
- * @param message
- * @param err
+ * @param message the triggering Discord message
+ * @param err the error message
  */
 const reportError = async (message: Message, err: any) => {
-    const consoleChannel = message.client.channels.cache.get(consoleID) as TextChannel;
+    const consoleChannel: TextChannel | undefined = message.client.channels.cache.get(consoleID) as TextChannel | undefined;
     if (consoleChannel) {
         let errMsg = `Message: ${message.id}, channel: ${message.channel.id}, server: ${message.guild!.id}\nError: `;
         errMsg += err;
-        consoleChannel.send(errMsg).catch(e => console.log(e));
+        consoleChannel.send(errMsg).catch((e: any) => console.log(e));
     }
     console.log(err);
 };

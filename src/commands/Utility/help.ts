@@ -1,7 +1,7 @@
-import Discord from 'discord.js';
+import {Message, MessageEmbed} from 'discord.js';
 import fs from 'fs';
 import {defaultPrefix} from '../../data.json';
-import {BotClient, Command} from "../../types";
+import {BotClient, Command, CommandArguments} from "../../types";
 
 const command: Command = {
     name: 'help',
@@ -9,11 +9,11 @@ const command: Command = {
     aliases: ['commands', 'command', 'cmd'],
     usage: '(command-name)',
 
-    async execute(message, args, prefix) {
+    async execute(message: Message, args: CommandArguments, prefix: string) {
         const mainArgs = args.main;
 
         if (!mainArgs.length) {
-            const embed = new Discord.MessageEmbed()
+            const embed = new MessageEmbed()
                 .setColor('BLUE')
                 .setDescription('My prefix is \`' + prefix + '\`.\n' +
                     '\`!m [meta] -l [link]\` to create a new meta (category).\n' +
@@ -22,9 +22,9 @@ const command: Command = {
                     '**List of commands:**')
                 .setFooter(`Type ${prefix}help [command] for more info on the command.`);
 
-            const categories = fs.readdirSync('./commands');
+            const categories = fs.readdirSync('./src/commands');
             categories.forEach(category => {
-                const commandFiles = fs.readdirSync(`./commands/${category}`).filter(file => file.endsWith('.js'));
+                const commandFiles = fs.readdirSync(`./src/commands/${category}`).filter(file => file.endsWith('.ts') || file.endsWith('.js'));
                 let commandArray: Command[] = [];
                 commandFiles.forEach(file => {
                     const command = require(`../${category}/${file}`);
@@ -33,16 +33,16 @@ const command: Command = {
                 embed.addField(`${category}`, `\`${commandArray.join('\` \`')}\``);
             });
 
-            await message.channel.send(embed);
+            await message.channel.send({embeds: [embed]});
         } else {
             const {commands} = message.client as BotClient;
             const name = mainArgs[0].toLowerCase();
             const command = commands.get(name) || commands.find(c => !!c.aliases && c.aliases.includes(name));
 
             if (!command)
-                return message.reply("unknown command.");
+                return message.reply("Unknown command.");
 
-            const embed = new Discord.MessageEmbed()
+            const embed = new MessageEmbed()
                 .setTitle(`\`${command.name}\``)
                 .setColor('BLUE');
 
@@ -62,9 +62,9 @@ const command: Command = {
                 embed.addField('Additional arguments', argsDescription);
             }
 
-            await message.channel.send(embed);
+            await message.channel.send({embeds: [embed]});
         }
     }
 };
 
-export default command;
+module.exports = command;

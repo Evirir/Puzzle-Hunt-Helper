@@ -1,6 +1,6 @@
 import reportError from "../../tools/reportError";
-import {Command} from "../../types";
-import {TextChannel} from "discord.js";
+import {Command, CommandArguments} from "../../types";
+import {Message, TextChannel} from "discord.js";
 
 const command: Command = {
     name: 'solved',
@@ -9,17 +9,17 @@ const command: Command = {
     usage: '[answer]',
     notes: 'Implementation detail: A channel whose name starts with 🏁 is treated as the meta channel.',
 
-    async execute(message, args) {
+    async execute(message: Message, args: CommandArguments) {
         const mainArgs = args.main;
 
         if (!mainArgs.length) {
-            return message.reply("please specify the answer.");
+            return message.reply("Please specify the answer.");
         }
         if (!(message.channel instanceof TextChannel)) {
             return reportError(message, "solved.ts: not in text channel.");
         }
         if (!message.channel.parent) {
-            return message.reply("this channel is not in a category.");
+            return message.reply("This channel is not in a category.");
         }
 
         // send answer and pin
@@ -40,4 +40,4 @@ const command: Command = {
     }
 };
 
-export default command;
+module.exports = command;

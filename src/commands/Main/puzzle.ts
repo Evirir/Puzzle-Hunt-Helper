@@ -1,7 +1,7 @@
 import {Message, TextChannel} from "discord.js";
 import createSheets from "../../tools/google";
 import reportError from "../../tools/reportError";
-import {Command} from "../../types";
+import {Command, CommandArguments} from "../../types";
 
 const command: Command = {
     name: 'puzzle',
@@ -13,12 +13,12 @@ const command: Command = {
         v: {count: 0, description: 'create a voice channel for this puzzle'}
     },
 
-    async execute(message, args) {
+    async execute(message: Message, args: CommandArguments) {
         const mainArgs = args.main;
         const addArgs = args.add;
 
         if (!mainArgs.length) {
-            return message.reply("please specify the name of the puzzle.");
+            return message.reply("Please specify the name of the puzzle.");
         }
 
         const puzzleName = mainArgs.join(' ');
@@ -33,7 +33,7 @@ const command: Command = {
         if (addArgs.has('v')) {
             await guildManager.create("🧩" + puzzleName, {
                 parent: category,
-                type: "voice"
+                type: "GUILD_VOICE"
             }).catch(e => reportError(message, e));
         }
 
@@ -56,4 +56,4 @@ const command: Command = {
     }
 };
 
-export default command;
+module.exports = command;

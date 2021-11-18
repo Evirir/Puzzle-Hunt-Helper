@@ -18,13 +18,13 @@ const command: Command = {
         const filter = (reaction: any, user: any) => {
             return ['✅', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
         };
-        const collector = msg.createReactionCollector(filter, {time: 15000, max: 1});
+        const collector = msg.createReactionCollector({filter, time: 15000, max: 1});
 
         collector.on('collect', async reaction => {
             if (reaction.emoji.name === '✅') {
                 const category = (message.channel as TextChannel).parent;
                 if (!category) {
-                    return message.reply("this channel is not in a category!");
+                    return message.reply("This channel is not in a category!");
                 }
                 const children = category.children;
                 children.forEach( (ch: Channel) => ch.delete().catch(err => reportError(message, err)));
@@ -38,4 +38,4 @@ const command: Command = {
     }
 };
 
-export default command;
+module.exports = command;

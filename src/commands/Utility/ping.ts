@@ -1,18 +1,18 @@
+import Discord, {Message} from 'discord.js';
 import {Command} from "../../types";
-import Discord from 'discord.js';
 
 const command: Command = {
     name: 'ping',
     description: `Reports the API latency.`,
 
-    execute(message) {
+    execute(message: Message) {
         const embed = new Discord.MessageEmbed()
             .setDescription(`Pong!`)
             .setTimestamp()
             .setColor('RED');
 
-        message.channel.send(embed);
+        message.channel.send({embeds: [embed]});
     }
 };
 
-export default command;
+module.exports = command;

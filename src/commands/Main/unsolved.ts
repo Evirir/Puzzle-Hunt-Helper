@@ -1,5 +1,5 @@
+import {Message, TextChannel} from "discord.js";
 import {Command} from "../../types";
-import {TextChannel} from "discord.js";
 
 const reportError = require("../../tools/reportError");
 
@@ -8,12 +8,12 @@ const command: Command = {
     description: `Mark the current puzzle/meta as unsolved.`,
     aliases: ['u'],
 
-    async execute(message) {
+    async execute(message: Message) {
         if (!(message.channel instanceof TextChannel)) {
             return reportError(message, "solved.ts: not in text channel.");
         }
         if (!message.channel.parent) {
-            return message.reply("this channel is not in a category.");
+            return message.reply("This channel is not in a category.");
         }
 
         let channelName = message.channel.name;
@@ -31,4 +31,4 @@ const command: Command = {
     }
 };
 
-export default command;
+module.exports = command;

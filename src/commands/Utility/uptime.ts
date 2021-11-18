@@ -1,3 +1,4 @@
+import {Message} from "discord.js";
 import {Command} from "../../types";
 
 const command: Command = {
@@ -5,7 +6,7 @@ const command: Command = {
     description: `Reports the uptime.`,
     aliases: [`awake`],
 
-    execute(message) {
+    execute(message: Message) {
         if (!message.client.uptime) {
             return message.channel.send("Uptime is null: something is wrong.");
         }
@@ -22,4 +23,4 @@ const command: Command = {
     }
 };
 
-export default command;
+module.exports = command;

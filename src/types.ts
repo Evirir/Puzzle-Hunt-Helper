@@ -4,6 +4,21 @@ export interface BotClient extends Client {
     commands: Collection<string, Command>
 }
 
+export interface Event {
+    /**
+     * The name of the event.
+     */
+    name: string,
+    /**
+     * Whether to run this event only once.
+     */
+    once?: boolean,
+    /**
+     * The main function to be executed.
+     */
+    execute(client: BotClient, args: any): void
+}
+
 export interface CommandArguments {
     /**
      * The main arguments.

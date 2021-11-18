@@ -1,7 +1,7 @@
 import createSheets from '../../tools/google';
 import reportError from '../../tools/reportError';
-import {Command} from "../../types";
-import {GuildCreateChannelOptions, TextChannel} from "discord.js";
+import {Command, CommandArguments} from "../../types";
+import {GuildChannelCreateOptions, Message, TextChannel} from "discord.js";
 
 const command: Command = {
     name: 'meta',
@@ -13,30 +13,33 @@ const command: Command = {
         v: {count: 0, description: 'create a voice channel for this meta'}
     },
 
-    async execute(message, args) {
+    async execute(message: Message, args: CommandArguments) {
         const mainArgs = args.main;
         const addArgs = args.add;
 
         if (!mainArgs.length) {
-            return message.reply("please specify the name of the round.");
+            return message.reply("Please specify the name of the round.");
         }
 
         const metaName = mainArgs.join(' ');
 
         const guildManager = message.guild!.channels;
-        const category = await guildManager.create(metaName, {type: 'category'}).catch(e => reportError(message, e));
+        const category = await guildManager.create(
+            metaName,
+            {type: 'GUILD_CATEGORY'} as GuildChannelCreateOptions
+        ).catch(e => reportError(message, e));
 
         // create text channel
         const textChannel: TextChannel = await guildManager.create(
             "🏁" + metaName,
-            {parent: category} as GuildCreateChannelOptions
+            {parent: category} as GuildChannelCreateOptions
         ).catch(e => reportError(e, message)) as TextChannel;
 
         // create voice channel if requested
         if (addArgs.has('v')) {
             await guildManager.create(
                 "🏁" + metaName,
-                {parent: category, type: "voice"} as GuildCreateChannelOptions
+                {parent: category, type: "GUILD_VOICE"} as GuildChannelCreateOptions
             ).catch(e => reportError(message, e));
         }
 
@@ -60,4 +63,5 @@ const command: Command = {
     }
 };
 
-export default command;
+
+module.exports = command;
