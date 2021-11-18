@@ -1,6 +1,7 @@
-const {inviteLink} = require('../../config.json');
+import {Command} from "../../types";
+import {inviteLink} from '../../data.json';
 
-module.exports = {
+const command: Command = {
     name: 'invite',
     description: `Get the invite link of this bot.`,
 
@@ -8,3 +9,5 @@ module.exports = {
         message.channel.send("Invite link: " + inviteLink);
     }
 };
+
+export default command;

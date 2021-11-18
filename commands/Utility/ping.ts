@@ -1,6 +1,7 @@
-const Discord = require('discord.js');
+import {Command} from "../../types";
+import Discord from 'discord.js';
 
-module.exports = {
+const command: Command = {
     name: 'ping',
     description: `Reports the API latency.`,
 
@@ -13,3 +14,5 @@ module.exports = {
         message.channel.send(embed);
     }
 };
+
+export default command;

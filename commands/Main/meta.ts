@@ -1,7 +1,9 @@
-const createSheets = require('../../tools/google.js');
-const reportError = require('../../tools/reportError.js');
+import createSheets from '../../tools/google.js';
+import reportError from '../../tools/reportError.js';
+import {Command} from "../../types";
+import {GuildCreateChannelOptions, TextChannel} from "discord.js";
 
-module.exports = {
+const command: Command = {
     name: 'meta',
     description: `Create a new round (category) with a text and a voice channel.`,
     aliases: ['m', 'round'],
@@ -21,18 +23,21 @@ module.exports = {
 
         const metaName = mainArgs.join(' ');
 
-        const guildManager = message.guild.channels;
+        const guildManager = message.guild!.channels;
         const category = await guildManager.create(metaName, {type: 'category'}).catch(e => reportError(message, e));
 
         // create text channel
-        const textChannel = await guildManager.create("🏁" + metaName, {parent: category}).catch(e => reportError(e, message));
+        const textChannel: TextChannel = await guildManager.create(
+            "🏁" + metaName,
+            {parent: category} as GuildCreateChannelOptions
+        ).catch(e => reportError(e, message)) as TextChannel;
 
         // create voice channel if requested
         if (addArgs.has('v')) {
-            await guildManager.create("🏁" + metaName, {
-                parent: category,
-                type: "voice"
-            }).catch(e => reportError(message, e));
+            await guildManager.create(
+                "🏁" + metaName,
+                {parent: category, type: "voice"} as GuildCreateChannelOptions
+            ).catch(e => reportError(message, e));
         }
 
         // create spreadsheet
@@ -48,8 +53,11 @@ module.exports = {
 
         // send links and pin
         const linkMsg = await textChannel.send(sentMsg).catch(e => reportError(e, message));
-        await linkMsg.pin().catch(e => reportError(e, message));
+        await linkMsg?.pin().catch(e => reportError(e, message));
 
+        // delete message
         await message.delete().catch(e => reportError(message, e));
     }
 };
+
+export default command;

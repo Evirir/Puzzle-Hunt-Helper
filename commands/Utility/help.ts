@@ -1,14 +1,15 @@
-const Discord = require('discord.js');
-const fs = require('fs');
-const {defaultPrefix} = require('../../config.json');
+import Discord from 'discord.js';
+import fs from 'fs';
+import {defaultPrefix} from '../../data.json';
+import {BotClient, Command} from "../../types";
 
-module.exports = {
+const command: Command = {
     name: 'help',
     description: `Show list of commands if used without arguments. Use \`${defaultPrefix}help [command]\` for more info on the command.`,
     aliases: ['commands', 'command', 'cmd'],
     usage: '(command-name)',
 
-    execute(message, args, prefix) {
+    async execute(message, args, prefix) {
         const mainArgs = args.main;
 
         if (!mainArgs.length) {
@@ -24,7 +25,7 @@ module.exports = {
             const categories = fs.readdirSync('./commands');
             categories.forEach(category => {
                 const commandFiles = fs.readdirSync(`./commands/${category}`).filter(file => file.endsWith('.js'));
-                let commandArray = [];
+                let commandArray: Command[] = [];
                 commandFiles.forEach(file => {
                     const command = require(`../${category}/${file}`);
                     commandArray.push(command.name);
@@ -32,11 +33,11 @@ module.exports = {
                 embed.addField(`${category}`, `\`${commandArray.join('\` \`')}\``);
             });
 
-            message.channel.send(embed);
+            await message.channel.send(embed);
         } else {
-            const {commands} = message.client;
+            const {commands} = message.client as BotClient;
             const name = mainArgs[0].toLowerCase();
-            const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
+            const command = commands.get(name) || commands.find(c => !!c.aliases && c.aliases.includes(name));
 
             if (!command)
                 return message.reply("unknown command.");
@@ -54,14 +55,16 @@ module.exports = {
             if (command.notes)
                 embed.addField(`Notes`, command.notes);
             if (command.args) {
-                let arguments = "";
+                let argsDescription: string = "";
                 for (const [key, value] of Object.entries(command.args)) {
-                    arguments += `\`-${key}\`: ${value.description}\n`;
+                    argsDescription += `\`-${key}\`: ${value.description}\n`;
                 }
-                embed.addField('Additional arguments', arguments);
+                embed.addField('Additional arguments', argsDescription);
             }
 
-            message.channel.send(embed);
+            await message.channel.send(embed);
         }
     }
 };
+
+export default command;
