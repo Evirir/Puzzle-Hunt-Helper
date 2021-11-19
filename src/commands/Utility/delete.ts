@@ -29,11 +29,9 @@ const command: Command = {
                 const children = category.children;
                 children.forEach( (ch: Channel) => ch.delete().catch(err => reportError(message, err)));
                 await category.delete().catch(err => reportError(message, err));
+            } else {
+                message.channel.send('Deletion cancelled.');
             }
-        });
-
-        collector.on('end', () => {
-            message.channel.send('Deletion cancelled.');
         });
     }
 };

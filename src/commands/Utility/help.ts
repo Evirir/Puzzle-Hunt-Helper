@@ -2,6 +2,7 @@ import {Message, MessageEmbed} from 'discord.js';
 import fs from 'fs';
 import {defaultPrefix} from '../../data.json';
 import {BotClient, Command, CommandArguments} from "../../types";
+import path from "path";
 
 const command: Command = {
     name: 'help',
@@ -22,9 +23,11 @@ const command: Command = {
                     '**List of commands:**')
                 .setFooter(`Type ${prefix}help [command] for more info on the command.`);
 
-            const categories = fs.readdirSync('./src/commands');
+            const categories = fs.readdirSync(path.resolve(__dirname, '..'));
+            console.log(categories);
             categories.forEach(category => {
-                const commandFiles = fs.readdirSync(`./src/commands/${category}`).filter(file => file.endsWith('.ts') || file.endsWith('.js'));
+                const commandFiles = fs.readdirSync(path.resolve(__dirname, `../${category}`))
+                                        .filter(file => file.endsWith('.ts') || file.endsWith('.js'));
                 let commandArray: Command[] = [];
                 commandFiles.forEach(file => {
                     const command = require(`../${category}/${file}`);
