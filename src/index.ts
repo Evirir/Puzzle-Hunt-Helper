@@ -1,5 +1,6 @@
 import {Client, Collection, Intents} from "discord.js";
 import fs from "fs";
+import path from "path";
 import dotenv from "dotenv";
 import {BotClient} from "./types";
 
@@ -15,9 +16,9 @@ discordClient.commands = new Collection();
 const client: BotClient = discordClient;
 
 // load commands
-const categories = fs.readdirSync('./src/commands');
+const categories = fs.readdirSync(path.resolve(__dirname, './commands'));
 for (const category of categories) {
-    const commandFiles = fs.readdirSync(`./src/commands/${category}`).filter(file => file.endsWith('.ts') || file.endsWith('.js'));
+    const commandFiles = fs.readdirSync(path.resolve(__dirname,`./commands/${category}`)).filter(file => file.endsWith('.ts') || file.endsWith('.js'));
     for (const file of commandFiles) {
         const command = require(`./commands/${category}/${file}`);
         client.commands.set(command.name, command);
@@ -25,7 +26,7 @@ for (const category of categories) {
 }
 
 // load events
-const eventFiles = fs.readdirSync('./src/events').filter(file => file.endsWith('.ts') || file.endsWith('.js'));
+const eventFiles = fs.readdirSync(path.resolve(__dirname, './events')).filter(file => file.endsWith('.ts') || file.endsWith('.js'));
 for (const file of eventFiles) {
     const event: any = require(`./events/${file}`);
     if (event.once) {

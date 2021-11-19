@@ -2,6 +2,7 @@
   "name": "puzzle-hunt-helper",
   "version": "1.0.1",
   "description": "A puzzle hunt helper.",
+  "main": "src/index.ts",
   "scripts": {
     "build": "tsc --build tsconfig.json",
     "start": "node build/index.js"
