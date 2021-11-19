@@ -1,11 +1,11 @@
 {
   "name": "puzzle-hunt-helper",
   "version": "1.0.1",
-  "description": "",
-  "main": "src/index.ts",
+  "description": "A puzzle hunt helper.",
   "scripts": {
-    "start": "node ./build/index.js",
-    "build": "tsc"
+    "build": "tsc --build tsconfig.json",
+    "start": "node build/app.js",
+    "dev": "yarn build && yarn start"
   },
   "keywords": [],
   "author": "",
