@@ -4,8 +4,7 @@
   "description": "A puzzle hunt helper.",
   "scripts": {
     "build": "tsc --build tsconfig.json",
-    "start": "node build/app.js",
-    "dev": "yarn build && yarn start"
+    "start": "node build/index.js"
   },
   "keywords": [],
   "author": "",
