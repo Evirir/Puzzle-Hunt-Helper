@@ -3,6 +3,10 @@
   "version": "1.0.1",
   "description": "",
   "main": "src/index.ts",
+  "scripts": {
+    "start": "node ./build/index.js",
+    "build": "tsc"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
