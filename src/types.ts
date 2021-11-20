@@ -1,7 +1,7 @@
 import {Client, Collection, Message} from "discord.js";
 
 export interface BotClient extends Client {
-    commands: Collection<string, Command>
+    commands: Collection<string, Command>;
 }
 
 export interface Event {
@@ -13,6 +13,7 @@ export interface Event {
      * Whether to run this event only once.
      */
     once?: boolean,
+
     /**
      * The main function to be executed.
      */
@@ -54,9 +55,9 @@ export interface Command {
      */
     notes?: string,
     /**
-     * Additional arguments. This should be an Object {argName1: {count: ?, description: ?}...}.
+     * Additional arguments. This should be an Object {argName1: {count: ?, description: ?}...}. argName's cannot not be empty.
      */
-    args?: {[argName: string]: {count: number, description: string}},
+    args?: { [argName: string]: { count: number, description: string } },
     /**
      * If this is true, only the developer can call this command.
      */
