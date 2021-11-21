@@ -9,8 +9,8 @@ const event: Event = {
     async execute(client, message) {
         const prefix: string = defaultPrefix;
 
-        // ignore DMs
-        if (message.channel.partial) return;
+        // allow TextChannel's only
+        if (!(message.channel instanceof TextChannel)) return;
 
         // ignore messages not starting with prefix
         if (!message.content.startsWith(prefix)) return;

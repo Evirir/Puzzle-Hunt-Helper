@@ -16,25 +16,28 @@ const command: Command = {
     async execute(message: Message, args: CommandArguments) {
         const mainArgs = args.main;
         const addArgs = args.add;
-
         if (!mainArgs.length) {
             return message.reply("Please specify the name of the puzzle.");
+        }
+
+        const channel = message.channel as TextChannel;
+        if (!channel.parent) {
+            return message.reply("This channel is not in a category.");
         }
 
         const puzzleName = mainArgs.join(' ');
 
         const guildManager = await message.guild!.channels;
-        const category = (message.channel as TextChannel).parent!;
+        const category = channel.parent;
 
         // create text channel
-        const textChannel = await guildManager.create("🧩" + puzzleName, {parent: category})!.catch(e => reportError(message, e)) as TextChannel;
+        const textChannel = await guildManager.create("🧩" + puzzleName, {parent: category})
+            .catch(e => reportError(message, e)) as TextChannel;
 
         // create voice channel if requested
         if (addArgs.has('v')) {
-            await guildManager.create("🧩" + puzzleName, {
-                parent: category,
-                type: "GUILD_VOICE"
-            }).catch(e => reportError(message, e));
+            await guildManager.create("🧩" + puzzleName, {parent: category, type: "GUILD_VOICE"})
+                .catch(e => reportError(message, e));
         }
 
         // create spreadsheet
