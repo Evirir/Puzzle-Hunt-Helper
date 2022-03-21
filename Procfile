@@ -1,1 +1,1 @@
-worker: npm run build && node build/index.js
+worker: npm run build && npm start
