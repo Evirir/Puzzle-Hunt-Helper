@@ -1,5 +1,8 @@
-# Build
+# Build files
 build
+
+# User-defined
+.env
 
 # Logs
 logs
