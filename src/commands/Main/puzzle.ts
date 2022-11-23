@@ -1,4 +1,4 @@
-import {Message, TextChannel} from "discord.js";
+import {ChannelType, Message, TextChannel} from "discord.js";
 import createSheets from "../../tools/google";
 import reportError from "../../tools/reportError";
 import {Command, CommandArguments} from "../../types";
@@ -22,7 +22,7 @@ const command: Command = {
 
         const channel = message.channel as TextChannel;
         if (!channel.parent) {
-            return message.reply("This channel is not in a category.");
+            return message.reply('This channel is not in a category.');
         }
 
         const puzzleName = mainArgs.join(' ');
@@ -31,12 +31,12 @@ const command: Command = {
         const category = channel.parent;
 
         // create text channel
-        const textChannel = await guildManager.create("🧩" + puzzleName, {parent: category})
+        const textChannel = await guildManager.create({name: '🧩' + puzzleName, parent: category})
             .catch(e => reportError(message, e)) as TextChannel;
 
         // create voice channel if requested
         if (addArgs.has('v')) {
-            await guildManager.create("🧩" + puzzleName, {parent: category, type: "GUILD_VOICE"})
+            await guildManager.create({name: "🧩" + puzzleName, parent: category, type: ChannelType.GuildVoice})
                 .catch(e => reportError(message, e));
         }
 

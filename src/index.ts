@@ -1,24 +1,26 @@
-import {Client, Collection, Intents} from "discord.js";
-import fs from "fs";
-import path from "path";
-import dotenv from "dotenv";
-import {BotClient} from "./types";
+import {GatewayIntentBits} from 'discord.js';
+import fs from "node:fs";
+import path from 'path';
+import dotenv from 'dotenv';
+import {BotClient} from './types';
 
 dotenv.config();
 
-// intents
-const intents = new Intents();
-intents.add(Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS);
+const intents = [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessageReactions
+];
 
 // create the client
-const discordClient: any = new Client({intents: intents});
-discordClient.commands = new Collection();
-const client: BotClient = discordClient;
+const client: BotClient = new BotClient({intents: intents});
 
 // load commands
 const categories = fs.readdirSync(path.resolve(__dirname, './commands'));
 for (const category of categories) {
-    const commandFiles = fs.readdirSync(path.resolve(__dirname,`./commands/${category}`)).filter(file => file.endsWith('.ts') || file.endsWith('.js'));
+    const commandFiles = fs.readdirSync(path.resolve(__dirname, `./commands/${category}`))
+        .filter((file: string) => file.endsWith('.ts') || file.endsWith('.js'));
     for (const file of commandFiles) {
         const command = require(`./commands/${category}/${file}`);
         client.commands.set(command.name, command);
@@ -26,13 +28,14 @@ for (const category of categories) {
 }
 
 // load events
-const eventFiles = fs.readdirSync(path.resolve(__dirname, './events')).filter(file => file.endsWith('.ts') || file.endsWith('.js'));
+const eventFiles = fs.readdirSync(path.resolve(__dirname, './events'))
+    .filter((file: string) => file.endsWith('.ts') || file.endsWith('.js'));
 for (const file of eventFiles) {
     const event: any = require(`./events/${file}`);
     if (event.once) {
-        client.once(event.name, (...args) => event.execute(client, ...args));
+        client.once(event.name, (...args: any) => event.execute(client, ...args));
     } else {
-        client.on(event.name, (...args) => event.execute(client, ...args));
+        client.on(event.name, (...args: any) => event.execute(client, ...args));
     }
 }
 

@@ -27,7 +27,7 @@ const command: Command = {
                     return message.reply("This channel is not in a category!");
                 }
                 const children = category.children;
-                children.forEach( (ch: Channel) => ch.delete().catch(err => reportError(message, err)));
+                children.cache.forEach((ch: Channel) => ch.delete().catch(err => reportError(message, err)));
                 await category.delete().catch(err => reportError(message, err));
             } else {
                 message.channel.send('Deletion cancelled.');

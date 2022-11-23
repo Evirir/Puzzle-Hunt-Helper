@@ -1,7 +1,7 @@
 import createSheets from '../../tools/google';
 import reportError from '../../tools/reportError';
 import {Command, CommandArguments} from "../../types";
-import {CategoryChannel, GuildChannelCreateOptions, Message, TextChannel} from "discord.js";
+import {CategoryChannel, GuildChannelCreateOptions, ChannelType, Message, TextChannel} from "discord.js";
 
 const command: Command = {
     name: 'meta',
@@ -29,23 +29,27 @@ const command: Command = {
         const metaName = mainArgs.join(' ');
 
         // create category or assign it to the current category
-        const guildManager = message.guild!.channels;
+        const guildChannelManager = message.guild!.channels;
         let category: CategoryChannel;
-        if (addArgs.has("i")) {
+        if (addArgs.has('i')) {
             category = channel.parent;
         } else {
-            category = await guildManager.create(metaName, {type: 'GUILD_CATEGORY'})
+            category = await guildChannelManager.create({name: metaName, type: ChannelType.GuildCategory})
                 .catch(e => reportError(message, e)) as CategoryChannel;
         }
 
         // create text channel
-        const textChannel = await guildManager.create(
-            "🏁" + metaName, {parent: category}
+        const textChannel = await guildChannelManager.create(
+            {name: "🏁" + metaName, parent: category}
         ).catch(e => reportError(e, message)) as TextChannel;
 
         // create voice channel if requested
         if (addArgs.has('v')) {
-            await guildManager.create("🏁" + metaName, {parent: category, type: "GUILD_VOICE"} as GuildChannelCreateOptions)
+            await guildChannelManager.create({
+                name: '🏁' + metaName,
+                parent: category,
+                type: ChannelType.GuildVoice
+            } as GuildChannelCreateOptions)
                 .catch(e => reportError(message, e));
         }
 

@@ -5,7 +5,7 @@ import parseArgs from "../tools/argumentParser";
 import reportError from "../tools/reportError";
 
 const event: Event = {
-    name: "messageCreate",
+    name: 'messageCreate',
     async execute(client, message) {
         const prefix: string = defaultPrefix;
 
@@ -33,13 +33,13 @@ const event: Event = {
 
         // only allow the dev to use dev commands
         if (command.dev && message.author.id !== dragID) {
-            return message.channel.send(`This command is only available to the developer.`);
+            return message.channel.send('This command is only available to the developer.');
         }
 
         // parse arguments
         const parsedArgs = parseArgs(args, command.args);
         if (parsedArgs === null) {
-            return message.reply(`Invalid arguments.`);
+            return message.reply('Invalid arguments.');
         }
 
         try {

@@ -1,7 +1,12 @@
 import {Client, Collection, Message} from "discord.js";
 
-export interface BotClient extends Client {
+export class BotClient extends Client {
     commands: Collection<string, Command>;
+
+    constructor(props: any) {
+        super(props);
+        this.commands = new Collection<string, Command>();
+    }
 }
 
 export interface Event {
