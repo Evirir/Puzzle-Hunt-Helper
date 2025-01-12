@@ -1,7 +1,7 @@
-import {ChannelType, Message, TextChannel} from "discord.js";
+import { ChannelType, Message, TextChannel } from "discord.js";
 import createSheets from "../../tools/google";
 import reportError from "../../tools/reportError";
-import {Command, CommandArguments} from "../../types";
+import { Command, CommandArguments } from "../../types";
 
 const command: Command = {
     name: 'puzzle',
@@ -9,8 +9,8 @@ const command: Command = {
     aliases: ['p', 'problem'],
     usage: '[puzzle name]',
     args: {
-        l: {count: 1, description: 'link to puzzle'},
-        v: {count: 0, description: 'create a voice channel for this puzzle'}
+        l: { count: 1, description: 'link to puzzle' },
+        v: { count: 0, description: 'create a voice channel for this puzzle' }
     },
 
     async execute(message: Message, args: CommandArguments) {
@@ -31,12 +31,12 @@ const command: Command = {
         const category = channel.parent;
 
         // create text channel
-        const textChannel = await guildManager.create({name: '🧩' + puzzleName, parent: category})
+        const textChannel = await guildManager.create({ name: '🧩' + puzzleName, parent: category })
             .catch(e => reportError(message, e)) as TextChannel;
 
         // create voice channel if requested
         if (addArgs.has('v')) {
-            await guildManager.create({name: "🧩" + puzzleName, parent: category, type: ChannelType.GuildVoice})
+            await guildManager.create({ name: "🧩" + puzzleName, parent: category, type: ChannelType.GuildVoice })
                 .catch(e => reportError(message, e));
         }
 
@@ -59,4 +59,4 @@ const command: Command = {
     }
 };
 
-module.exports = command;
+export default command;

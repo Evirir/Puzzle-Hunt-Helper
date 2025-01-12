@@ -8,4 +8,4 @@ const event: Event = {
     }
 };
 
-module.exports = event;
+export default event;

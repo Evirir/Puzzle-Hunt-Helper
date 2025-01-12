@@ -1,7 +1,7 @@
 import createSheets from '../../tools/google';
 import reportError from '../../tools/reportError';
-import {Command, CommandArguments} from "../../types";
-import {CategoryChannel, GuildChannelCreateOptions, ChannelType, Message, TextChannel} from "discord.js";
+import { Command, CommandArguments } from "../../types";
+import { CategoryChannel, GuildChannelCreateOptions, ChannelType, Message, TextChannel } from "discord.js";
 
 const command: Command = {
     name: 'meta',
@@ -9,9 +9,9 @@ const command: Command = {
     aliases: ['m', 'round', 'r'],
     usage: '[meta name]',
     args: {
-        l: {count: 1, description: 'link to meta'},
-        v: {count: 0, description: 'create a voice channel for this meta'},
-        i: {count: 0, description: 'create the meta in the same category instead of a new one'}
+        l: { count: 1, description: 'link to meta' },
+        v: { count: 0, description: 'create a voice channel for this meta' },
+        i: { count: 0, description: 'create the meta in the same category instead of a new one' }
     },
 
     async execute(message: Message, args: CommandArguments) {
@@ -34,13 +34,13 @@ const command: Command = {
         if (addArgs.has('i')) {
             category = channel.parent;
         } else {
-            category = await guildChannelManager.create({name: metaName, type: ChannelType.GuildCategory})
+            category = await guildChannelManager.create({ name: metaName, type: ChannelType.GuildCategory })
                 .catch(e => reportError(message, e)) as CategoryChannel;
         }
 
         // create text channel
         const textChannel = await guildChannelManager.create(
-            {name: "🏁" + metaName, parent: category}
+            { name: "🏁" + metaName, parent: category }
         ).catch(e => reportError(e, message)) as TextChannel;
 
         // create voice channel if requested
@@ -73,5 +73,4 @@ const command: Command = {
     }
 };
 
-
-module.exports = command;
+export default command;

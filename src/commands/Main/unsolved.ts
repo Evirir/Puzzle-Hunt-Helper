@@ -1,7 +1,7 @@
 import {Message, TextChannel} from "discord.js";
 import {Command} from "../../types";
 
-const reportError = require("../../tools/reportError");
+import reportError from "../../tools/reportError";
 
 const command: Command = {
     name: 'unsolved',
@@ -31,4 +31,4 @@ const command: Command = {
     }
 };
 
-module.exports = command;
+export default command;
