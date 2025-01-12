@@ -7,7 +7,7 @@ const event: Event = {
     async execute(client) {
         const startMessage = `It's currently **${client.readyAt}**\n`;
         console.log(startMessage);
-        await client.user!.setActivity(`for !help`, {type: ActivityType.Watching});
+        client.user!.setActivity(`for !help`, { type: ActivityType.Watching });
     }
 };
 

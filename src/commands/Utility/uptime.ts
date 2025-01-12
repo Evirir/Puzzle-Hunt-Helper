@@ -1,5 +1,6 @@
-import {Message} from "discord.js";
-import {Command} from "../../types";
+import { Message, TextChannel } from "discord.js";
+import { Command } from "../../types";
+import assert from "assert";
 
 const command: Command = {
     name: 'uptime',
@@ -7,6 +8,7 @@ const command: Command = {
     aliases: [`awake`],
 
     execute(message: Message) {
+        assert(message.channel instanceof TextChannel);
         if (!message.client.uptime) {
             return message.channel.send("Uptime is null: something is wrong.");
         }

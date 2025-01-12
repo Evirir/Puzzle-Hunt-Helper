@@ -1,16 +1,14 @@
+import assert from "assert";
+import { Channel, Message, TextChannel } from "discord.js";
 import reportError from "../../tools/reportError";
-import {Channel, Message, TextChannel} from "discord.js";
-import {Command} from "../../types";
+import { Command } from "../../types";
 
 const command: Command = {
     name: 'delete',
     description: `Deletes the whole category of the current message.`,
 
     async execute(message: Message) {
-        if (!(message.channel as TextChannel).parent) {
-            return message.channel.send("This channel does not belong to a category.");
-        }
-
+        assert(message.channel instanceof TextChannel);
         const msg = await message.channel.send("Are you sure that you want to delete all channels in this category? You have 15 seconds.");
         await msg.react('✅');
         await msg.react('❌');
@@ -21,8 +19,9 @@ const command: Command = {
         const collector = msg.createReactionCollector({filter, time: 15000, max: 1});
 
         collector.on('collect', async reaction => {
+            assert(message.channel instanceof TextChannel);
             if (reaction.emoji.name === '✅') {
-                const category = (message.channel as TextChannel).parent;
+                const category = message.channel.parent;
                 if (!category) {
                     return message.reply("This channel is not in a category!");
                 }
